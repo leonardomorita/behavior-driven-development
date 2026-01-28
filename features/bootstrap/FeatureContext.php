@@ -1,5 +1,7 @@
 <?php
 
+use Alura\Armazenamento\Entity\Formacao;
+use Alura\Armazenamento\Infra\EntitymanagerCreator;
 use Behat\Step\Given;
 use Behat\Step\Then;
 use Behat\Step\When;
@@ -7,12 +9,17 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
+    private EntityManagerInterface $entityManager;
+    private string $mensagemDeErro = '';
+    private int $idFormacaoInserida;
+
     /**
      * Initializes context.
      *
@@ -25,32 +32,46 @@ class FeatureContext implements Context
     }
 
     #[When('eu criar uma formação com descrição :arg1')]
-    public function euCriarUmaFormaçãoComDescrição($arg1): void
+    public function euCriarUmaFormaçãoComDescrição($descricaoFormacao): void
     {
-        throw new PendingException();
+        try {
+            $formacao = new Formacao();
+            $formacao->setDescricao($descricaoFormacao);
+        } catch (\InvalidArgumentException $exception) {
+            $this->mensagemDeErro = $exception->getMessage();
+        }
     }
 
     #[Then('eu vou ver a seguinte mensagem de erro :arg1')]
-    public function euVouVerASeguinteMensagemDeErro($arg1): void
+    public function euVouVerASeguinteMensagemDeErro(string $mensagemDeErro): void
     {
-        throw new PendingException();
+        assert($mensagemDeErro === $this->mensagemDeErro);
     }
 
     #[Given('que estou conectado ao banco de dados')]
     public function queEstouConectadoAoBancoDeDados(): void
     {
-        throw new PendingException();
+        $this->entityManager = (new EntitymanagerCreator())->getEntityManager();
     }
 
-    #[When('tento criar uma formação com a descrição :arg1')]
-    public function tentoCriarUmaFormaçãoComADescrição($arg1): void
+    #[When('tento salvar uma formação com a descrição :arg1')]
+    public function tentoSalvarUmaFormaçãoComADescrição(string $descricaoFormacao): void
     {
-        throw new PendingException();
+        $formacao = new Formacao();
+        $formacao->setDescricao($descricaoFormacao);
+
+        $this->entityManager->persist($formacao);
+        $this->entityManager->flush();
+
+        $this->idFormacaoInserida = $formacao->getId();
     }
 
     #[Then('se eu buscar no banco, devo encontrar essa formação')]
     public function seEuBuscarNoBancoDevoEncontrarEssaFormação(): void
     {
-        throw new PendingException();
+        $repositorio = $this->entityManager->getRepository(Formacao::class);
+        $formacao = $repositorio->find($this->idFormacaoInserida);
+
+        assert($formacao instanceof Formacao);
     }
 }
