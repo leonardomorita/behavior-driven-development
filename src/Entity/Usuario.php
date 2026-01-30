@@ -12,50 +12,56 @@ use Doctrine\ORM\Mapping\Table;
  * @Entity
  * @Table(name="usuarios")
  */
-#[Entity]
-#[Table(name: "usuarios")]
 class Usuario
 {
-    #[Id]
-    #[GeneratedValue]
-    #[Column]
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
+     */
     private int $id;
-    #[Column]
+   
+    /**
+     * @Column(type="text")
+     */
     private string $email;
-    #[Column]
+
+    /**
+     * @Column(type="text")
+     */
     private string $senha;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
 
-    public function getSenhaCifrada(): string
+    public function getSenhaCifrada()
     {
         return $this->senha;
     }
 
-    public function setSenha(string $senha): void
+    public function setSenha(string $senha)
     {
         $this->senha = password_hash($senha, PASSWORD_ARGON2ID);
     }
 
-    public function senhaEstaCorreta(string $senhaPura): bool
+    public function senhaEstaCorreta(string $senhaPura)
     {
         return password_verify($senhaPura, $this->senha);
     }

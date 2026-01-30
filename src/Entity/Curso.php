@@ -8,34 +8,40 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity]
-#[Table(name: "cursos")]
+/**
+ * @Entity
+ * @Table(name="cursos")
+ */
 class Curso
 {
-    #[Id]
-    #[GeneratedValue]
-    #[Column]
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
+     */
     private ?int $id = null;
 
-    #[Column]
+    /**
+     * @Column(type="text")
+     */
     private string $descricao = '';
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function getDescricao(): ?string
+    public function getDescricao()
     {
         return $this->descricao;
     }
 
-    public function setDescricao(string $descricao): void
+    public function setDescricao(string $descricao)
     {
         $this->descricao = $descricao;
     }

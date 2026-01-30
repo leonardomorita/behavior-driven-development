@@ -9,9 +9,12 @@ use Doctrine\ORM\ORMSetup;
 
 class EntitymanagerCreator
 {
-    public function getEntityManager(): EntityManagerInterface
+    /**
+     * @return EntityManager
+     */
+    public function getEntityManager()
     {
-        $config = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity'], true);
+        $config = ORMSetup::createAnnotationMetadataConfiguration([__DIR__ . '/../Entity'], true);
         $conexao = DriverManager::getConnection([
             'driver' => 'pdo_sqlite',
             'path' => __DIR__ . '/../../db.sqlite',
